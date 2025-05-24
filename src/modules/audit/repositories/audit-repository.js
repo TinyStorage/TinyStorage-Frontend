@@ -1,31 +1,14 @@
 import httpClient from '@/core/plugins/http-client';
 
 const apiVersion = '/v1';
-const apiRoute = `${apiVersion}/items`;
+const apiRoute = `${apiVersion}/item-audits`;
 
-export async function GetAllProducts() {
-  const url = `${apiRoute}/getProducts`;
-
+export async function GetAllItemAudits() {
   const result = await httpClient
-    .get(url)
+    .get(apiRoute)
     .then((response) => response.data)
     .catch((error) => {
-      throw new Error(error?.response?.data?.message || 'Ошибка получения списка продуктов');
-    });
-
-  return result;
-}
-
-export async function CreateProduct(formData) {
-  const result = await httpClient
-    .post(`${apiRoute}/createProduct`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      throw new Error(error?.response?.data?.message || 'Ошибка создания продукта');
+      throw new Error(error?.response?.data?.message || 'Ошибка получения списка аудитов');
     });
 
   return result;
