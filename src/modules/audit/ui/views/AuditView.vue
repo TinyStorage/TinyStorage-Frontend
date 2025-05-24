@@ -23,7 +23,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <template v-if="!productList.length">
+            <template v-if="!filteredList.length">
               <p>Записи отсутствуют</p>
             </template>
             <template v-else>
@@ -38,11 +38,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="product in filteredList" :key="product.id">
-                      <td>{{ product.id }}</td>
-                      <td>{{ product.name }}</td>
-                      <td>{{ product.property }}</td>
-                      <td>{{ product.value }}</td>
+                    <tr v-for="itemAudit in filteredList" :key="itemAudit.id">
+                      <td>{{ itemAudit.id }}</td>
+                      <td>{{ itemAudit.itemName }}</td>
+                      <td>{{ itemAudit.property }}</td>
+                      <td>{{ itemAudit.value }}</td>
                     </tr>
                   </tbody>
                 </template>
@@ -59,46 +59,14 @@
 import { mapMutations } from 'vuex';
 
 import ALERT_TYPES from '@/modules/alert/constants/alert-types';
+import { GetAllItemAudits } from '../../repositories/audit-repository';
 
 export default {
   name: 'AuditView',
 
   data() {
     return {
-      // eslint-disable-next-line spaced-comment
-      //TODO: заменить на данные с бэка
-      productList: [
-        {
-          id: 1,
-          name: 'Велосипед',
-          property: 'Работоспособность',
-          value: 'Да',
-        },
-        {
-          id: 2,
-          name: 'Ноутбук',
-          property: 'Работоспособность',
-          value: 'Да',
-        },
-        {
-          id: 3,
-          name: 'Ноутбук',
-          property: 'Работоспособность',
-          value: 'Да',
-        },
-        {
-          id: 4,
-          name: 'Ноутбук',
-          property: 'Работоспособность',
-          value: 'Да',
-        },
-        {
-          id: 5,
-          name: 'Ноутбук',
-          property: 'Работоспособность',
-          value: 'Да',
-        },
-      ],
+      auditItemList: [],
       filteredList: [],
       searchTimeoutId: null,
       searchValue: '',
@@ -106,22 +74,19 @@ export default {
   },
 
   created() {
-    this.filteredList = [...this.productList];
+    this.fetchItemAudits();
   },
 
   methods: {
     ...mapMutations('alert', ['ADD_ALERT']),
     ...mapMutations('preloader', ['ADD_LOADER', 'REMOVE_LOADER']),
 
-    async fetchOrders() {
+    async fetchItemAudits() {
       try {
         this.ADD_LOADER();
-
-        // eslint-disable-next-line spaced-comment
-        //const result = await GetAllOrders();
-
-        // eslint-disable-next-line spaced-comment
-        //this.productList = result.data;
+        const result = await GetAllItemAudits();
+        this.auditItemList = result.data;
+        this.filteredList = [...this.auditItemList];
       } catch (error) {
         this.ADD_ALERT({ type: ALERT_TYPES.ERROR, text: error.message });
       } finally {
@@ -135,10 +100,10 @@ export default {
 
       this.searchTimeoutId = setTimeout(() => {
         if (!this.searchValue) {
-          this.filteredList = [...this.productList]; // Сбрасываем фильтр
+          this.filteredList = [...this.auditItemList];
         } else {
           const searchLower = this.searchValue.toLowerCase();
-          this.filteredList = this.productList.filter((item) => item.name.toLowerCase().includes(searchLower));
+          this.filteredList = this.auditItemList.filter((item) => item.name.toLowerCase().includes(searchLower));
         }
       }, 400);
     },

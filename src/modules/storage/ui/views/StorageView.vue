@@ -40,7 +40,7 @@
                     <tr v-for="item in filteredList" :key="item.id">
                       <td>{{ item.id }}</td>
                       <td>{{ item.name }}</td>
-                      <td>{{ item.borrower }}</td>
+                      <td>{{ item.takenBy }}</td>
                     </tr>
                   </tbody>
                 </template>
@@ -64,8 +64,6 @@ export default {
 
   data() {
     return {
-      // eslint-disable-next-line spaced-comment
-      //TODO: заменить на данные с бэка
       itemList: [],
       filteredList: [],
       searchTimeoutId: null,
@@ -75,7 +73,6 @@ export default {
 
   created() {
     this.fetchItems();
-    this.filteredList = [...this.itemList];
   },
 
   methods: {
@@ -87,6 +84,7 @@ export default {
         this.ADD_LOADER();
         const result = await GetAllItems();
         this.itemList = result.data;
+        this.filteredList = [...this.itemList];
       } catch (error) {
         this.ADD_ALERT({ type: ALERT_TYPES.ERROR, text: error.message });
       } finally {

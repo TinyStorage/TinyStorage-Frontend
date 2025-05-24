@@ -13,18 +13,3 @@ export async function GetAllItems() {
 
   return result;
 }
-
-export async function CreateItem(formData) {
-  const result = await httpClient
-    .post(`${apiRoute}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      throw new Error(error?.response?.data?.message || 'Ошибка добавления оборудования.');
-    });
-
-  return result;
-}
