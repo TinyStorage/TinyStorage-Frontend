@@ -39,9 +39,11 @@
                   </thead>
                   <tbody>
                     <tr v-for="itemAudit in filteredList" :key="itemAudit.id">
-                      <td>{{ itemAudit.id }}</td>
-                      <td>{{ itemAudit.itemName }}</td>
-                      <td>{{ itemAudit.property }}</td>
+                      <td>{{ itemAudit.itemId }}</td>
+                      <td>{{ itemAudit.name }}</td>
+                      <td>
+                        {{ itemAudit.property === 'TakenBy' && itemAudit.value === '' ? 'Возращение' : 'Взятие' }}
+                      </td>
                       <td>{{ itemAudit.value }}</td>
                     </tr>
                   </tbody>
@@ -103,7 +105,10 @@ export default {
           this.filteredList = [...this.auditItemList];
         } else {
           const searchLower = this.searchValue.toLowerCase();
-          this.filteredList = this.auditItemList.filter((item) => item.name.toLowerCase().includes(searchLower));
+
+          this.filteredList = this.auditItemList.filter((item) =>
+            (item.name || '').toLowerCase().includes(searchLower),
+          );
         }
       }, 400);
     },

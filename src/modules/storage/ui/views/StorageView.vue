@@ -33,7 +33,7 @@
                     <tr>
                       <th class="text-left">Идентификатор</th>
                       <th class="text-left">Название</th>
-                      <th class="text-left">Владелец</th>
+                      <th class="text-left">Кем взят</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -83,7 +83,7 @@ export default {
       try {
         this.ADD_LOADER();
         const result = await GetAllItems();
-        this.itemList = result.data;
+        this.itemList = result.data.sort((a, b) => a.name.localeCompare(b.name));
         this.filteredList = [...this.itemList];
       } catch (error) {
         this.ADD_ALERT({ type: ALERT_TYPES.ERROR, text: error.message });

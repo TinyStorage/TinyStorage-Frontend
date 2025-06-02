@@ -25,7 +25,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn tile depressed small class="white--text" color="main-color" @click="logout"> Выйти </v-btn>
+      <v-btn tile depressed small class="white--text" color="main-color" @click="logout"> Выйти</v-btn>
     </v-app-bar>
 
     <v-main>
@@ -59,13 +59,13 @@ export default {
           title: 'Склад',
           icon: 'mdi-package-variant',
           link: '/storage',
-          roles: ['Администратор'],
+          roles: ['Лаборант'],
         },
         {
           title: 'Аудит',
           icon: 'mdi-order-bool-descending-variant',
           link: '/audit',
-          roles: ['Лаборант', 'Администратор'],
+          roles: ['Администратор'],
         },
       ],
     };
@@ -77,7 +77,7 @@ export default {
     filteredNavItems() {
       if (!keycloak.authenticated) return [];
 
-      const userRoles = keycloak.tokenParsed?.realm_access?.roles ?? [];
+      const userRoles = keycloak.tokenParsed?.role ?? [];
 
       return this.navItems.filter((item) => item.roles?.some((role) => userRoles.includes(role)));
     },
@@ -109,10 +109,8 @@ export default {
     async logout() {
       try {
         this.REMOVE_AUTH_DATA();
-        keycloak.logout({ redirectUri: window.location.origin }); 
+        await keycloak.logout({ redirectUri: `${window.location.origin}/app` });
         this.ADD_ALERT({ type: ALERT_TYPES.SUCCESS, text: 'Успешный выход' });
-
-        //this.$router.push({ name: 'main' });
       } catch (error) {
         this.ADD_ALERT({ type: ALERT_TYPES.ERROR, text: error.message });
       }

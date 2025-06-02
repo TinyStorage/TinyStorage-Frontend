@@ -9,21 +9,18 @@ const routes = [
   {
     path: '/',
     name: 'main',
-    redirect: {
-      name: 'audit',
-    },
   },
   {
     path: '/storage',
     name: 'storage',
     component: () => import(/* webpackChunkName: "storage" */ '@/modules/storage/ui/views/StorageView.vue'),
-    meta: { isProtected: true, roles: ['Администратор'] },
+    meta: { isProtected: true, roles: ['Лаборант'] },
   },
   {
     path: '/audit',
     name: 'audit',
     component: () => import(/* webpackChunkName: "audit" */ '@/modules/audit/ui/views/AuditView.vue'),
-    meta: { isProtected: true, roles: ['Лаборант', 'Администратор'] },
+    meta: { isProtected: true, roles: ['Администратор'] },
   },
   {
     path: '/error/:id',
@@ -43,9 +40,10 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.isProtected) {
     if (!keycloak.authenticated) {
-      keycloak.login();
+      await keycloak.login();
     } else {
-      const userRoles = keycloak.tokenParsed.realm_access.roles;
+      const userRoles = keycloak.tokenParsed?.role ?? [];
+
       const requiredRoles = to.meta.roles;
       const hasRole = requiredRoles.some((role) => userRoles.includes(role));
       if (hasRole) {
