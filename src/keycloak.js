@@ -1,9 +1,9 @@
 import Keycloak from 'keycloak-js';
 
 const keycloak = new Keycloak({
-  url: 'http://192.168.0.18:8081',
-  realm: 'TinyStorage',
-  clientId: 'TinyStorageClient',
+  url: 'https://tiny-storage.online/keycloak',
+  realm: 'tiny-storage-realm',
+  clientId: 'DEV',
 });
 
 export default keycloak;
